@@ -146,6 +146,34 @@ button:active {
 .led-config input[type="number"] {
   width: 60px;
 }
+/* Style for the color picker button */
+.led-config input[type="color"] {
+  width: 50px; /* Adjust size for desktop */
+  height: 50px;
+  padding: 0;
+  border: 2px solid #ccc; /* Default border */
+  cursor: pointer;
+  border-radius: 50%; /* Optional: Circular button */
+  background-color: transparent; /* Ensure it doesn't block color swatch */
+  transition: border 0.3s ease;
+}
+
+/* Highlight the selected color */
+.led-config input[type="color"]:focus {
+  border: 2px solid #666; /* Change border on focus */
+  outline: none; /* Remove default outline */
+}
+
+/* Add a visual preview of the selected color */
+.led-config input[type="color"]::-webkit-color-swatch {
+  border-radius: 50%; /* Match the button's shape */
+  border: none; /* Remove inner swatch border */
+}
+
+.led-config input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0; /* No extra padding */
+}
+
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {

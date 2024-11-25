@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 
 function LEDStripControl({ client }) {
   const [ledStrips, setLedStrips] = useState({
-    main: { intensity: 128, color: '#ffffff', mode: 'ON' },
-    confirmation: { intensity: 128, color: '#00ff00', mode: 'ON' },
-    delete: { intensity: 128, color: '#ff0000', mode: 'OFF' },
-    notification: { intensity: 128, color: '#0000ff', mode: 'BLINK' },
+    main: { group: 1, intensity: 128, color: '#ffffff', mode: 'ON' },
+    confirmation: {group: 2, intensity: 128, color: '#00ff00', mode: 'ON' },
+    delete: {group: 3, intensity: 128, color: '#ff0000', mode: 'OFF' },
+    notification: {group: 4, intensity: 128, color: '#0000ff', mode: 'BLINK' },
   });
 
   const handleInputChange = (strip, field, value) => {
@@ -17,7 +17,7 @@ function LEDStripControl({ client }) {
 
   const handleUpdateConfig = (strip) => {
     if (client) {
-      client.publish(`ledstrip/${strip}/config`, JSON.stringify(ledStrips[strip]));
+      client.publish(`ledstrip/config`, JSON.stringify(ledStrips[strip]));
     }
     alert(`${strip.charAt(0).toUpperCase() + strip.slice(1)} LED Strip configuration updated successfully!`);
   };
