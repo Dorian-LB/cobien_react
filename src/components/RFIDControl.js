@@ -39,9 +39,16 @@ function RFIDControl({ client }) {
     setLink('');
   };
 
+  const handleConfigurationClick = () => {
+    if (client) {
+      client.publish('rfid/ini', 'Card_Configuration');
+    }
+    setConfiguring(true);
+  };
+
   return (
     <div className="rfid-control">
-      <button onClick={() => setConfiguring(true)}>Configuration</button>
+      <button onClick={handleConfigurationClick}>Configuration</button>
       {configuring && (
         <div className="rfid-config">
           <label>Card ID: {cardID || 'Waiting for card...'}</label>

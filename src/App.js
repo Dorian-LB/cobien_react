@@ -25,7 +25,7 @@ function App() {
 
   // MQTT setup
   useEffect(() => {
-    const mqttClient = mqtt.connect('ws://192.168.237.196:9001');
+    const mqttClient = mqtt.connect('ws://localhost:9001');
 
     mqttClient.on('connect', () => {
       console.log('Connected to MQTT broker');
