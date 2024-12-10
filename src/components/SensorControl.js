@@ -16,7 +16,7 @@ function SensorControl() {
 
   // Connect to MQTT broker
   useEffect(() => {
-    const client = mqtt.connect('ws://192.168.250.196:9001'); // Replace with your broker's WebSocket URL
+    const client = mqtt.connect('ws://localhost:9001'); // Replace with your broker's WebSocket URL
     client.on('connect', () => {
       console.log('Connected to MQTT broker');
       client.subscribe('sensor/current-configuration');
@@ -55,9 +55,34 @@ function SensorControl() {
 
   const handleInputChange = (id, field, value) => {
     setSensors((prevSensors) =>
-      prevSensors.map((sensor) =>
-        sensor.id === id ? { ...sensor, [field]: value } : sensor
-      )
+      prevSensors.map((sensor) => { 
+        let updatedSensor = {...sensor};
+
+        if (sensor.id === 1 && data.delta1 !== undefined) {
+          updatedSensor.delta = data.delta1;
+        }
+  
+        if (sensor.id === 2 && data.delta2 !== undefined) {
+          updatedSensor.delta = data.delta2;
+        }
+        
+        if (sensor.id === 3 && data.delta3 !== undefined) {
+          updatedSensor.delta = data.delta3;
+        }
+
+        if (sensor.id === 4 && data.delta4 !== undefined) {
+          updatedSensor.delta = data.delta4;
+        }
+
+        if (sensor.id === 5 && data.delta5 !== undefined) {
+          updatedSensor.delta = data.delta5;
+        }
+
+        if (sensor.id === 6 && data.delta6 !== undefined) {
+          updatedSensor.delta = data.delta6;
+        }
+        return updatedSensor; // Return the updated sensor object
+      })
     );
   };
 
