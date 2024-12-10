@@ -38,51 +38,41 @@ function SensorControl() {
 
   const updateSensorData = (data) => {
     setSensors((prevSensors) =>
-      prevSensors.map((sensor) =>
-        sensor.id === data.id
-          ? {
-              ...sensor,
-              //sensitivity: data.sensitivity,
-              //gain: data.gain,
-              //threshold: data.threshold,
-              delta: data.delta,
-              ...(sensor.type === 'Touch' && data.color ? { color: data.color } : {}),
-            }
-          : sensor
-      )
+      prevSensors.map((sensor) =>{ 
+      let updatedSensor = { ...sensor };
+      if (sensor.id === 1 && data.delta1 !== undefined) {
+        updatedSensor.delta = data.delta1;
+      }
+
+      if (sensor.id === 2 && data.delta2 !== undefined) {
+        updatedSensor.delta = data.delta2;
+      }
+      
+      if (sensor.id === 3 && data.delta3 !== undefined) {
+        updatedSensor.delta = data.delta3;
+      }
+
+      if (sensor.id === 4 && data.delta4 !== undefined) {
+        updatedSensor.delta = data.delta4;
+      }
+
+      if (sensor.id === 5 && data.delta5 !== undefined) {
+        updatedSensor.delta = data.delta5;
+      }
+
+      if (sensor.id === 6 && data.delta6 !== undefined) {
+        updatedSensor.delta = data.delta6;
+      }
+      return updatedSensor; // Return the updated sensor object
+      })
     );
   };
 
   const handleInputChange = (id, field, value) => {
     setSensors((prevSensors) =>
-      prevSensors.map((sensor) => { 
-        let updatedSensor = {...sensor};
-
-        if (sensor.id === 1 && data.delta1 !== undefined) {
-          updatedSensor.delta = data.delta1;
-        }
-  
-        if (sensor.id === 2 && data.delta2 !== undefined) {
-          updatedSensor.delta = data.delta2;
-        }
-        
-        if (sensor.id === 3 && data.delta3 !== undefined) {
-          updatedSensor.delta = data.delta3;
-        }
-
-        if (sensor.id === 4 && data.delta4 !== undefined) {
-          updatedSensor.delta = data.delta4;
-        }
-
-        if (sensor.id === 5 && data.delta5 !== undefined) {
-          updatedSensor.delta = data.delta5;
-        }
-
-        if (sensor.id === 6 && data.delta6 !== undefined) {
-          updatedSensor.delta = data.delta6;
-        }
-        return updatedSensor; // Return the updated sensor object
-      })
+      prevSensors.map((sensor) =>
+        sensor.id === id ? { ...sensor, [field]: value } : sensor
+      )
     );
   };
 
