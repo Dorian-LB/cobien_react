@@ -25,7 +25,7 @@ function App() {
 
   // MQTT setup
   useEffect(() => {
-    const mqttClient = mqtt.connect('ws://localhost:9001');
+    const mqttClient = mqtt.connect('ws://192.168.20.196:9001');
 
     mqttClient.on('connect', () => {
       console.log('Connected to MQTT broker');
@@ -80,7 +80,7 @@ function App() {
             </button>
           </nav>
           <div className="content">
-            {activeTab === 'Sensors' && <SensorControl client={client} />}
+            {activeTab === 'Sensors' && <SensorControl />}
             {activeTab === 'LEDStrip' && <LEDStripControl client={client} />}
             {activeTab === 'RFIDControl' && <RFIDControl client={client} />}
           </div>
@@ -89,7 +89,7 @@ function App() {
         <div className="desktop-layout">
           <div className="desktop-section">
             <h2>Sensors</h2>
-            <SensorControl client={client} />
+            <SensorControl />
           </div>
           <div className="desktop-section">
             <h2>LED Strip Control</h2>

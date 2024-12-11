@@ -236,7 +236,6 @@ button:active {
 .delta-bar {
   position: absolute;
   height: 100%;
-  background: green;
   transition: width 0.3s, left 0.3s, background-color 0.3s;
 }
 

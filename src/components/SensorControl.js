@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import mqtt from 'mqtt';
 
-function SensorControl({ client }) {
+function SensorControl() {
   const initialSensors = [
     { id: 1, type: 'Touch', sensitivity: 1, gain: 1, threshold: 50, delta: 0 },
     { id: 2, type: 'Touch', sensitivity: 1, gain: 1, threshold: 50, delta: 0 },
@@ -16,7 +16,7 @@ function SensorControl({ client }) {
 
   // Connect to MQTT broker
   useEffect(() => {
-    //const client = mqtt.connect('ws://localhost:9001'); // Replace with your broker's WebSocket URL
+    const client = mqtt.connect('ws://192.168.20.196:9001'); // Replace with your broker's WebSocket URL
     client.on('connect', () => {
       console.log('Connected to MQTT broker');
       client.subscribe('sensor/current-configuration');
@@ -111,7 +111,7 @@ function SensorControl({ client }) {
                   style={{
                     left: sensor.delta < 0 ? `${50 + sensor.delta / 2.54}%` : '50%',
                     width: `${Math.abs(sensor.delta) / 2.54}%`,
-                    backgroundColor: sensor.delta > sensor.threshold ? 'red' : 'green',
+                    backgroundColor: sensor.delta > sensor.threshold ? 'green' : sensor.delta > 0 ? 'red' : 'blue',
                   }}
                 ></div>
 
@@ -128,12 +128,12 @@ function SensorControl({ client }) {
             </div>
 
             <div>
-              <label>Sensitivity (Power of 2):</label>
+              <label>Sensibilité : (sensibilité max = 15) </label>
               <select
                 value={sensor.sensitivity}
                 onChange={(e) => handleInputChange(sensor.id, 'sensitivity', parseInt(e.target.value))}
               >
-                {[1, 2, 4, 8, 16, 32, 64, 128].map((val) => (
+                {[15, 31, 47, 63, 79, 95, 111, 127].map((val) => (
                   <option key={val} value={val}>
                     {val}
                   </option>
@@ -142,12 +142,12 @@ function SensorControl({ client }) {
             </div>
 
             <div>
-              <label>Gain (1, 2, 4, 8):</label>
+              <label>Gain (gain max = 3):</label>
               <select
                 value={sensor.gain}
                 onChange={(e) => handleInputChange(sensor.id, 'gain', parseInt(e.target.value))}
               >
-                {[1, 2, 4, 8].map((val) => (
+                {[0, 1, 2, 3].map((val) => (
                   <option key={val} value={val}>
                     {val}
                   </option>
