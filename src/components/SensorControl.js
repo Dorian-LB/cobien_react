@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import mqtt from 'mqtt';
 
-function SensorControl() {
+function SensorControl({ client }) {
   const initialSensors = [
     { id: 1, type: 'Touch', sensitivity: 1, gain: 1, threshold: 50, delta: 0 },
     { id: 2, type: 'Touch', sensitivity: 1, gain: 1, threshold: 50, delta: 0 },
@@ -16,7 +16,7 @@ function SensorControl() {
 
   // Connect to MQTT broker
   useEffect(() => {
-    const client = mqtt.connect('ws://localhost:9001'); // Replace with your broker's WebSocket URL
+    //const client = mqtt.connect('ws://localhost:9001'); // Replace with your broker's WebSocket URL
     client.on('connect', () => {
       console.log('Connected to MQTT broker');
       client.subscribe('sensor/current-configuration');
@@ -65,7 +65,7 @@ function SensorControl() {
       }
       return updatedSensor; // Return the updated sensor object
       })
-    );
+    ); 
   };
 
   const handleInputChange = (id, field, value) => {

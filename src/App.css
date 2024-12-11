@@ -219,32 +219,7 @@ button:active {
   width: 60px;
 }
 
-.rfid-control .rfid-config {
-  margin-bottom: 15px;
-}
-
-.rfid-control .rfid-config label {
-  display: block;
-  font-weight: bold;
-}
-
-.rfid-control .rfid-config input,
-.rfid-control .rfid-config button {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border-radius: var(--border-radius);
-  border: 1px solid #ccc;
-}
-
-/* Styling for the RFID Control section */
-.rfid-control {
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-}
-
+/* Delta bar */
 .horizontal-bar {
   margin: 10px 0;
 }
@@ -271,6 +246,34 @@ button:active {
   bottom: 0;
   width: 2px;
   background: blue;
+}  
+
+
+/* Styling for the RFID Control section */
+.rfid-control {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
+
+.rfid-control .rfid-config {
+  margin-bottom: 15px;
+}
+
+.rfid-control .rfid-config label {
+  display: block;
+  font-weight: bold;
+}
+
+.rfid-control .rfid-config input,
+.rfid-control .rfid-config button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: var(--border-radius);
+  border: 1px solid #ccc;
+}
+
 
 
