@@ -233,7 +233,7 @@ button:active {
   overflow: hidden;
 }
 
-.delta-bar {
+.deviation-bar {
   position: absolute;
   height: 100%;
   transition: width 0.3s, left 0.3s, background-color 0.3s;

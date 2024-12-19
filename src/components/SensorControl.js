@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import mqtt from 'mqtt';
 
 function SensorControl() {
+  // Initial sensor configuration
   const initialSensors = [
-    { id: 1, type: 'Touch', sensitivity: 1, gain: 1, threshold: 50, delta: 0 },
-    { id: 2, type: 'Touch', sensitivity: 1, gain: 1, threshold: 50, delta: 0 },
-    { id: 3, type: 'Touch', sensitivity: 1, gain: 1, threshold: 50, delta: 0},
-    { id: 4, type: 'Proximity', sensitivity: 1, gain: 1, threshold: 50, delta: 0},
-    { id: 5, type: 'Proximity', sensitivity: 1, gain: 1, threshold: 50, delta: 0},
-    { id: 6, type: 'Proximity', sensitivity: 1, gain: 1, threshold: 50, delta: 0},
+    { id: 1, type: 'Touch', threshold: 100, scaling: 1, deviation: 0 },
+    { id: 2, type: 'Proximity', threshold: 100, scaling: 1, deviation: 0 },
+    { id: 3, type: 'Touch', threshold: 100, scaling: 1, deviation: 0 },
+    { id: 4, type: 'Proximity', threshold: 100, scaling: 1, deviation: 0 },
   ];
 
   const [sensors, setSensors] = useState(initialSensors);
@@ -16,7 +15,7 @@ function SensorControl() {
 
   // Connect to MQTT broker
   useEffect(() => {
-    const client = mqtt.connect('ws://192.168.20.196:9001'); // Replace with your broker's WebSocket URL
+    const client = mqtt.connect('ws://192.168.228.196:9001'); 
     client.on('connect', () => {
       console.log('Connected to MQTT broker');
       client.subscribe('sensor/current-configuration');
@@ -38,34 +37,28 @@ function SensorControl() {
 
   const updateSensorData = (data) => {
     setSensors((prevSensors) =>
-      prevSensors.map((sensor) =>{ 
-      let updatedSensor = { ...sensor };
-      if (sensor.id === 1 && data.delta1 !== undefined) {
-        updatedSensor.delta = data.delta1;
-      }
+      prevSensors.map((sensor) => {
+        const updatedSensor = { ...sensor };
 
-      if (sensor.id === 2 && data.delta2 !== undefined) {
-        updatedSensor.delta = data.delta2;
-      }
-      
-      if (sensor.id === 3 && data.delta3 !== undefined) {
-        updatedSensor.delta = data.delta3;
-      }
+        if (sensor.id === 1 && data.PIC1?.touchDeviation !== undefined) {
+          updatedSensor.deviation = data.PIC1.touchDeviation;
+        }
 
-      if (sensor.id === 4 && data.delta4 !== undefined) {
-        updatedSensor.delta = data.delta4;
-      }
+        if (sensor.id === 2 && data.PIC1?.proximityDeviation !== undefined) {
+          updatedSensor.deviation = data.PIC1.proximityDeviation;
+        }
 
-      if (sensor.id === 5 && data.delta5 !== undefined) {
-        updatedSensor.delta = data.delta5;
-      }
+        if (sensor.id === 3 && data.PIC2?.touchDeviation !== undefined) {
+          updatedSensor.deviation = data.PIC2.touchDeviation;
+        }
 
-      if (sensor.id === 6 && data.delta6 !== undefined) {
-        updatedSensor.delta = data.delta6;
-      }
-      return updatedSensor; // Return the updated sensor object
+        if (sensor.id === 4 && data.PIC2?.proximityDeviation !== undefined) {
+          updatedSensor.deviation = data.PIC2.proximityDeviation;
+        }
+
+        return updatedSensor;
       })
-    ); 
+    );
   };
 
   const handleInputChange = (id, field, value) => {
@@ -82,11 +75,9 @@ function SensorControl() {
       mqttClient.publish(
         'sensor/update',
         JSON.stringify({
-          id: sensor.id,
-          sensitivity: sensor.sensitivity,
-          gain: sensor.gain,
+          sensorId: sensor.id,
           threshold: sensor.threshold,
-          delta: sensor.delta,
+          scaling: sensor.scaling,
         })
       );
       alert(`Configuration updated for Sensor ${id}`);
@@ -99,19 +90,18 @@ function SensorControl() {
         {sensors.map((sensor) => (
           <div key={sensor.id} className="sensor-config">
             <h3>
-              {sensor.type} Sensor {sensor.id >= 4 && sensor.id <= 6 ? sensor.id - 3 : sensor.id}
+              {sensor.type} Sensor {sensor.id}
             </h3>
-            {/* Horizontal bar for Delta visualization */}
+            {/* Horizontal bar for Deviation visualization */}
             <div className="horizontal-bar">
-              <label>Delta:</label>
+              <label>Deviation:</label>
               <div className="bar-container">
-                {/* Dynamic delta bar */}
+                {/* Dynamic deviation bar */}
                 <div
-                  className="delta-bar"
+                  className="deviation-bar"
                   style={{
-                    left: sensor.delta < 0 ? `${50 + sensor.delta / 2.54}%` : '50%',
-                    width: `${Math.abs(sensor.delta) / 2.54}%`,
-                    backgroundColor: sensor.delta > sensor.threshold ? 'green' : sensor.delta > 0 ? 'red' : 'blue',
+                    width: `${sensor.deviation / 1.27}%`,
+                    backgroundColor: sensor.deviation > sensor.threshold ? 'red' : 'green',
                   }}
                 ></div>
 
@@ -119,40 +109,12 @@ function SensorControl() {
                 <div
                   className="threshold-line"
                   style={{
-                    left: `${50 + sensor.threshold / 2.54}%`,
+                    left: `${sensor.threshold / 1.27}%`,
                   }}
                 ></div>
               </div>
-              {/* Show the delta value */}
-              <p className="delta-value">Current Delta: {sensor.delta}</p>
-            </div>
-
-            <div>
-              <label>Sensibilité : (sensibilité max = 15) </label>
-              <select
-                value={sensor.sensitivity}
-                onChange={(e) => handleInputChange(sensor.id, 'sensitivity', parseInt(e.target.value))}
-              >
-                {[15, 31, 47, 63, 79, 95, 111, 127].map((val) => (
-                  <option key={val} value={val}>
-                    {val}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label>Gain (gain max = 3):</label>
-              <select
-                value={sensor.gain}
-                onChange={(e) => handleInputChange(sensor.id, 'gain', parseInt(e.target.value))}
-              >
-                {[0, 1, 2, 3].map((val) => (
-                  <option key={val} value={val}>
-                    {val}
-                  </option>
-                ))}
-              </select>
+              {/* Show the deviation value */}
+              <p className="deviation-value">Current Deviation: {sensor.deviation}</p>
             </div>
 
             <div>
@@ -164,6 +126,20 @@ function SensorControl() {
                 value={sensor.threshold}
                 onChange={(e) => handleInputChange(sensor.id, 'threshold', parseInt(e.target.value))}
               />
+            </div>
+
+            <div>
+              <label>Scaling (0-4):</label>
+              <select
+                value={sensor.scaling}
+                onChange={(e) => handleInputChange(sensor.id, 'scaling', parseInt(e.target.value))}
+              >
+                {[0, 1, 2, 3, 4].map((val) => (
+                  <option key={val} value={val}>
+                    {val}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <button onClick={() => updateConfiguration(sensor.id)}>Update Configuration</button>
