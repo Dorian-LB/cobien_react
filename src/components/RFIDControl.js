@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 function RFIDControl({ client }) {
   const [cardID, setCardID] = useState('');
   const [configuring, setConfiguring] = useState(false);
-  const [link, setLink] = useState('');
+  const [action, setAction] = useState('');
 
   // Listen for MQTT messages to detect RFID cards
   useEffect(() => {
@@ -29,14 +29,14 @@ function RFIDControl({ client }) {
   }, [client, configuring]);
 
   const confirmConfiguration = () => {
-    if (client && cardID && link) {
-      client.publish('rfid/config', JSON.stringify({ id: cardID, link }));
-      alert(`RFID Card ID ${cardID} linked to ${link}`);
+    if (client && cardID && action) {
+      client.publish('rfid/config', JSON.stringify({ id: cardID, action }));
+      alert(`RFID Card ID ${cardID} linked to action: ${action}`);
     } else {
-      alert('Please enter a valid link and ensure an RFID card is detected.');
+      alert('Please ensure an RFID card is detected and an action is selected.');
     }
     setConfiguring(false);
-    setLink('');
+    setAction('');
   };
 
   const handleConfigurationClick = () => {
@@ -52,14 +52,14 @@ function RFIDControl({ client }) {
       {configuring && (
         <div className="rfid-config">
           <label>Card ID: {cardID || 'Waiting for card...'}</label>
-          <label>
-            Link:
-            <input
-              type="text"
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-            />
-          </label>
+          <div>
+            <label className='action-prompt'>A quelle action voulez-vous attribuer cette carte?</label>
+            <div className="action-button-prompt">
+            <button className="action-button" onClick={() => setAction('Visio')}>Visio</button>
+            <button className="action-button" onClick={() => setAction('Agenda')}>Agenda</button>
+            <button className="action-button" onClick={() => setAction('Question')}>Question</button>
+            </div>
+          </div>
           <button onClick={confirmConfiguration}>Confirm</button>
         </div>
       )}
