@@ -1,17 +1,31 @@
 // VisioPage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function VisioPage() {
-  const [contacts] = useState([
-    { name: 'Leo1', email: 'kamdemleonard6@gmail.com' },
-    { name: 'Leo_Prof', email: 'joseph.kamdem@2026.icam.fr' },
-    { name: 'Leo2', email: 'kamdemleonard04@gmail.com' },
-    {name: 'Dorian', email: 'dorian.le-boulch@2024.icam.fr'}
-  ]);
+  const [contacts, setContacts] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isValidated, setIsValidated] = useState(false);
   const navigate = useNavigate();
+
+  // Récupérer les contacts depuis le serveur
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/contacts');
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des contacts.');
+        }
+        const data = await response.json();
+        setContacts(data);
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la récupération des contacts.');
+      }
+    };
+
+    fetchContacts();
+  }, []);
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % contacts.length);
@@ -66,7 +80,11 @@ function VisioPage() {
       <h1>Planifier une Visio</h1>
       {!isValidated ? (
         <div>
-          <p>Voulez-vous appeler {contacts[currentIndex].name} ?</p>
+          {contacts.length > 0 ? (
+            <p>Voulez-vous appeler {contacts[currentIndex].name} ?</p>
+          ) : (
+            <p>Chargement des contacts...</p>
+          )}
           <div className="button-group">
           <button onClick={handleNext} className="next-button">Suivant</button>
           <button onClick={handleValidate} className="validate-button">Valider</button>
