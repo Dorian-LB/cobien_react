@@ -1,38 +1,23 @@
-// VisioPage.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { VisioActionsContext } from './MQTTHandler';
 
-function VisioPage() {
+function VisioPage({ sensorData }) {
   const [contacts, setContacts] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isValidated, setIsValidated] = useState(false);
   const navigate = useNavigate();
 
-  // Récupérer les contacts depuis le serveur
-  useEffect(() => {
-    const fetchContacts = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/contacts');
-        if (!response.ok) {
-          throw new Error('Erreur lors de la récupération des contacts.');
-        }
-        const data = await response.json();
-        setContacts(data);
-      } catch (error) {
-        console.error('Erreur:', error);
-        alert('Erreur lors de la récupération des contacts.');
-      }
-    };
-
-    fetchContacts();
-  }, []);
+  const visioActions = useContext(VisioActionsContext);
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % contacts.length);
+    console.log('Passage au contact suivant');
   };
 
   const handleValidate = () => {
     setIsValidated(true);
+    console.log('Validation de la visio');
   };
 
   const handleConfirm = () => {
@@ -53,9 +38,6 @@ function VisioPage() {
   };
 
   const sendEmailInvitation = async (to, meetUrl) => {
-    const subject = 'Invitation à une visioconférence';
-    const body = `Salut,\n\nJ'ai planifié une visioconférence. Voici le lien : ${meetUrl}`;
-
     try {
       const response = await fetch('http://localhost:3000/send-email', {
         method: 'POST',
@@ -66,18 +48,48 @@ function VisioPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de l\'envoi de l\'e-mail.');
+        const errorText = await response.text();
+        throw new Error(`Erreur lors de l'envoi de l'e-mail: ${errorText}`);
       }
       alert('Invitation envoyée avec succès !');
     } catch (error) {
       console.error('Erreur:', error);
-      alert('Erreur lors de l\'envoi de l\'invitation.');
+      alert('Erreur lors de l\'envoi de l\'invitation. Détails: ' + error.message);
     }
   };
 
+  useEffect(() => {
+    if (visioActions) {
+      visioActions.handleValidate = handleValidate;
+      visioActions.handleNext = handleNext;
+      visioActions.handleConfirm = handleConfirm;
+      visioActions.handleCancel = handleCancel;
+      visioActions.isValidatedState = () => isValidated;
+      console.log('Actions de visio enregistrées dans le contexte.');
+    }
+  }, [visioActions, handleValidate, handleNext, handleConfirm, handleCancel, isValidated]);
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/contacts');
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des contacts.');
+        }
+        const data = await response.json();
+        setContacts(data);
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la récupération des contacts.');
+      }
+    };
+
+    fetchContacts();
+  }, []);
+
   return (
     <div className="visio-page">
-      <h1>Planifier une Visio</h1>
+      <h1>Sélectionner le contact à appeler</h1>
       {!isValidated ? (
         <div>
           {contacts.length > 0 ? (
@@ -86,16 +98,16 @@ function VisioPage() {
             <p>Chargement des contacts...</p>
           )}
           <div className="button-group">
-          <button onClick={handleNext} className="next-button">Suivant</button>
-          <button onClick={handleValidate} className="validate-button">Valider</button>
+            <button onClick={handleValidate} className="validate-button">Valider</button>
+            <button onClick={handleNext} className="next-button">Suivant</button>
           </div>
         </div>
       ) : (
         <div>
           <p>Confirmez-vous l'appel avec {contacts[currentIndex].name} ?</p>
           <div className="button-group">
-          <button onClick={handleConfirm} className="confirm-button">Confirmer</button>
-          <button onClick={handleCancel} className="cancel-button">Annuler</button>
+            <button onClick={handleConfirm} className="confirm-button">Confirmer</button>
+            <button onClick={handleCancel} className="cancel-button">Annuler</button>
           </div>
         </div>
       )}
