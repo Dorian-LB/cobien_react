@@ -3,6 +3,7 @@ import mqtt from 'mqtt';
 import SensorControl from './components/SensorControl';
 import LEDStripControl from './components/LEDStripControl';
 import RFIDControl from './components/RFIDControl';
+import AddContact from './components/AddContact';
 import './App.css';
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
 
   // MQTT setup
   useEffect(() => {
-    const mqttClient = mqtt.connect('ws://192.168.20.196:9001');
+    const mqttClient = mqtt.connect('ws://192.168.1.15:9001');
 
     mqttClient.on('connect', () => {
       console.log('Connected to MQTT broker');
@@ -78,11 +79,18 @@ function App() {
             >
               RFID Control
             </button>
+            <button
+              className={activeTab === 'AddContact' ? 'active' : ''}
+              onClick={() => setActiveTab('AddContact')}
+            >
+              Ajouter Contact
+            </button>            
           </nav>
           <div className="content">
             {activeTab === 'Sensors' && <SensorControl />}
             {activeTab === 'LEDStrip' && <LEDStripControl client={client} />}
             {activeTab === 'RFIDControl' && <RFIDControl client={client} />}
+            {activeTab === 'AddContact' && <AddContact onContactAdded={() => setActiveTab('Sensors')} />}            
           </div>
         </>
       ) : (
@@ -98,6 +106,10 @@ function App() {
           <div className="desktop-section">
             <h2>RFID Control</h2>
             <RFIDControl client={client} />
+          </div>
+          <div className='desktop-section'>
+            <h2>Ajouter un contact</h2>
+            <AddContact onContactAdded={() => setActiveTab('Sensors')}/>
           </div>
         </div>
       )}

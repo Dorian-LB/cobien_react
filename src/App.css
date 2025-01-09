@@ -6,6 +6,8 @@
   --border-radius: 4px;
   --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   --button-spacing: 10px;      /* Space between buttons */
+  --action-button-color: #28a745; /* Action button color */
+  --action-button-hover: #218838; /* Action button hover color */
 }
 
 body {
@@ -45,6 +47,26 @@ button:hover {
 
 button:active {
   background-color: var(--active-color);
+}
+
+/* Styles for action buttons */
+.action-button {
+  background-color: var(--action-button-color);
+}
+
+.action-button:hover {
+  background-color: var(--action-button-hover);
+}
+
+/* Add spacing between Card ID and action selection */
+.rfid-control .rfid-config .action-prompt {
+  margin-top: 15px; 
+  margin-bottom: 15px;
+}
+
+.action-button-prompt{
+  margin-top: 25px;
+  margin-bottom: 25px;
 }
 
 /* Mobile-specific navbar */
@@ -233,7 +255,7 @@ button:active {
   overflow: hidden;
 }
 
-.delta-bar {
+.deviation-bar {
   position: absolute;
   height: 100%;
   transition: width 0.3s, left 0.3s, background-color 0.3s;
@@ -254,6 +276,7 @@ button:active {
   padding: 20px;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
+  position: relative;
 }
 
 .rfid-control .rfid-config {
@@ -274,5 +297,42 @@ button:active {
   border: 1px solid #ccc;
 }
 
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0; 
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
 
+.input-field:focus {
+  border-color: #007bff;
+  outline: none;
+}
 
+.contact-form label {
+  display: block;
+  margin-right: 20px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button-group button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.button-group button:hover {
+  background-color: var(--hover-color);
+}
+
+.button-group button:nth-child(2) {
+  margin-left: 10px;
+}
