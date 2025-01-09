@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { VisioActionsContext } from './MQTTHandler';
+import mqtt from 'mqtt';
 
 function VisioPage({ sensorData }) {
   const [contacts, setContacts] = useState([]);
@@ -9,15 +10,35 @@ function VisioPage({ sensorData }) {
   const navigate = useNavigate();
 
   const visioActions = useContext(VisioActionsContext);
+  const mqttClient = mqtt.connect('ws://localhost:9001');
+
+  const publishLedstripUpdate = (message) => {
+    mqttClient.publish('ledstrip/update', JSON.stringify(message), (err) => {
+      if (err) {
+        console.error('Erreur lors de la publication sur ledstrip/update:', err);
+      } else {
+        console.log('Message publié sur ledstrip/update:', message);
+      }
+    });
+  };
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % contacts.length);
     console.log('Passage au contact suivant');
+
+      // Publiez les messages LED après validation
+      publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "OFF" });
+      publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "ON" });
   };
 
   const handleValidate = () => {
     setIsValidated(true);
     console.log('Validation de la visio');
+
+    // Publiez les messages LED après validation
+    publishLedstripUpdate({ group: 1, intensity: 255, color: "#00FF00", mode: "OFF" });
+    publishLedstripUpdate({ group: 1, intensity: 255, color: "#00FF00", mode: "ON" });
+    publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "ON" });
   };
 
   const handleConfirm = () => {
@@ -25,10 +46,19 @@ function VisioPage({ sensorData }) {
     const meetUrl = createJitsiMeeting();
     window.open(meetUrl, '_blank');
     sendEmailInvitation(selectedContact.email, meetUrl);
+
+    // Publiez les messages LED après validation
+    publishLedstripUpdate({ group: 1, intensity: 255, color: "#00FF00", mode: "OFF" });
+    publishLedstripUpdate({ group: 1, intensity: 255, color: "#00FF00", mode: "ON" });
+    publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "ON" });
   };
 
   const handleCancel = () => {
     navigate('/');
+
+    // Publiez les messages LED après validation
+    publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "OFF" });
+    publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "ON" });
   };
 
   const createJitsiMeeting = () => {
