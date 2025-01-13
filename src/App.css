@@ -77,3 +77,77 @@ button:active {
     font-size: 20px;
   }
 }
+
+
+.screen-saver {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #ffffff;
+  font-family: 'Arial', sans-serif;
+  cursor: pointer;
+  width: 100%;
+}
+
+.time-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.digital-clock {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+.analog-clock {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border: 5px solid #ffffff;
+  border-radius: 50%;
+}
+
+.hour-hand, .minute-hand, .second-hand {
+  position: absolute;
+  width: 50%;
+  height: 2px;
+  background: #fff;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0% 50%;
+}
+
+.hour-hand {
+  height: 4px;
+  background: #f4e04d;
+}
+
+.minute-hand {
+  height: 3px;
+  background: #91f4e4;
+}
+
+.second-hand {
+  height: 2px;
+  background: #ff5e57;
+}
+
+.center-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.weather-container p {
+  text-align: center;
+  font-size: 1.2em;
+  color: rgb(184, 186, 187);
+}

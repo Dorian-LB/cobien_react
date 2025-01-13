@@ -25,19 +25,11 @@ function VisioPage({ sensorData }) {
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % contacts.length);
     console.log('Passage au contact suivant');
-
-      // Publiez les messages LED après validation
-      publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "OFF" });
-      publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "ON" });
   };
 
   const handleValidate = () => {
     setIsValidated(true);
     console.log('Validation de la visio');
-
-    // Publiez les messages LED après validation
-    publishLedstripUpdate({ group: 1, intensity: 255, color: "#00FF00", mode: "OFF" });
-    publishLedstripUpdate({ group: 1, intensity: 255, color: "#00FF00", mode: "ON" });
     publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "ON" });
   };
 
@@ -46,19 +38,10 @@ function VisioPage({ sensorData }) {
     const meetUrl = createJitsiMeeting();
     window.open(meetUrl, '_blank');
     sendEmailInvitation(selectedContact.email, meetUrl);
-
-    // Publiez les messages LED après validation
-    publishLedstripUpdate({ group: 1, intensity: 255, color: "#00FF00", mode: "OFF" });
-    publishLedstripUpdate({ group: 1, intensity: 255, color: "#00FF00", mode: "ON" });
-    publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "ON" });
   };
 
   const handleCancel = () => {
     navigate('/');
-
-    // Publiez les messages LED après validation
-    publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "OFF" });
-    publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "ON" });
   };
 
   const createJitsiMeeting = () => {
