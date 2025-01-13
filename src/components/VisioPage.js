@@ -10,7 +10,7 @@ function VisioPage({ sensorData }) {
   const navigate = useNavigate();
 
   const visioActions = useContext(VisioActionsContext);
-  const mqttClient = mqtt.connect('ws://localhost:9001');
+  const mqttClient = mqtt.connect('ws://192.168.172.196:9001');
 
   const publishLedstripUpdate = (message) => {
     mqttClient.publish('ledstrip/update', JSON.stringify(message), (err) => {

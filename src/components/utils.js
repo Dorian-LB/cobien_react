@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import mqtt from 'mqtt';
 
-const mqttClient = mqtt.connect('ws://localhost:9001'); // Connexion MQTT globale
+const mqttClient = mqtt.connect('ws://192.168.172.196:9001'); 
 
 export const navigateToVisio = (navigate) => {
   // Publier les messages sur le topic ledstrip/update

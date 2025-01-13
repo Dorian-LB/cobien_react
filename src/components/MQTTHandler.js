@@ -14,12 +14,58 @@ const VisioActionsContext = createContext({
 const MQTTHandler = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [sensorData, setSensorData] = useState(null);
 
+  // Initial sensor configuration
+  const initialSensors = {
+    PIC1: {
+      touchDeviation: 0,
+      proximityDeviation: 0,
+      touchState: 0,
+      proximityState: 0,
+    },
+    PIC2: {
+      touchDeviation: 0,
+      proximityDeviation: 0,
+      touchState: 0,
+      proximityState: 0,
+    },
+  };
+
+  const [sensors, setSensors] = useState(initialSensors);
+  const [formerSensors, setformerSensors] = useState(initialSensors);
   const visioActions = useContext(VisioActionsContext);
 
+  const updateSensorData = (data) => {
+    setformerSensors(sensors);
+    setSensors((prevSensors) => {
+      if (typeof prevSensors !== 'object' || prevSensors === null) {
+        console.error('prevSensors n\'est pas un objet valide:', prevSensors);
+        return initialSensors; 
+      }
+
+      // return prevSensors.map((sensor) => {
+      const updatedSensors = { ...prevSensors };
+  
+      if (data.PIC1) {
+        updatedSensors.PIC1.touchDeviation = data.PIC1.touchDeviation;
+        updatedSensors.PIC1.proximityDeviation = data.PIC1.proximityDeviation;
+        updatedSensors.PIC1.touchState = data.PIC1.touchState;
+        updatedSensors.PIC1.proximityState = data.PIC1.proximityState;
+      }
+  
+      if (data.PIC2) {
+        updatedSensors.PIC2.touchDeviation = data.PIC2.touchDeviation;
+        updatedSensors.PIC2.proximityDeviation = data.PIC2.proximityDeviation;
+        updatedSensors.PIC2.touchState = data.PIC2.touchState;
+        updatedSensors.PIC2.proximityState = data.PIC2.proximityState;
+      }
+  
+        return updatedSensors;
+      });
+  };
+
   useEffect(() => {
-    const mqttClient = mqtt.connect('ws://localhost:9001');
+    const mqttClient = mqtt.connect('ws://192.168.172.196:9001');
 
     const publishLedstripUpdate = (message) => {
       mqttClient.publish('ledstrip/update', JSON.stringify(message), (err) => {
@@ -57,42 +103,27 @@ const MQTTHandler = ({ children }) => {
         }
 
         if (topic === 'sensor/current-configuration') {
-          console.log('Données des capteurs reçues :', jsonData);
-          setSensorData(jsonData);
+          updateSensorData(jsonData);
+          console.log('Données des capteurs reçues :', sensors);
+          // setSensors(jsonData); 
 
           if (location.pathname === '/visio' && visioActions) {
-            if (jsonData.PIC1.touchDeviation > 100) {
+            if (jsonData.PIC1.touchState === 0 && sensors.PIC1.touchState === 1) {   
               if (!isValidated()) {
                 visioActions.handleValidate();
                 console.log('Validation de la visio');
-
-                // Publiez les messages LED après validation
-                publishLedstripUpdate({ group: 1, intensity: 255, color: "#00FF00", mode: "OFF" });
-                publishLedstripUpdate({ group: 1, intensity: 255, color: "#00FF00", mode: "ON" });
                 publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "ON" });
-
               } else {
                 visioActions.handleConfirm();
                 console.log('Confirmation de l\'appel');
-
-                  // Publiez les messages LED après validation
-                  publishLedstripUpdate({ group: 1, intensity: 255, color: "#00FF00", mode: "OFF" });
-                  publishLedstripUpdate({ group: 1, intensity: 255, color: "#00FF00", mode: "ON" });
-                  publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "ON" });
               }
-            }
-            if (jsonData.PIC2.touchDeviation > 100) {
+            }  
+            if (jsonData.PIC2.touchState === 0 && sensors.PIC2.touchState === 1) {
               if (!isValidated()) {
                 visioActions.handleNext();
-                  // Publiez les messages LED après validation
-                  publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "OFF" });
-                  publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "ON" });
                 console.log('Passage au contact suivant');
               } else {
                 visioActions.handleCancel();
-                  // Publiez les messages LED après validation
-                  publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "OFF" });
-                  publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "ON" });
                 console.log('Annulation de l\'appel');
               }
             }
@@ -119,7 +150,7 @@ const MQTTHandler = ({ children }) => {
   return (
     <VisioActionsContext.Provider value={visioActions}>
       {React.Children.map(children, child =>
-        React.cloneElement(child, { sensorData })
+        React.cloneElement(child, { sensors })
       )}
     </VisioActionsContext.Provider>
   );
