@@ -8,6 +8,8 @@
   --button-spacing: 10px;      /* Space between buttons */
   --action-button-color: #28a745; /* Action button color */
   --action-button-hover: #218838; /* Action button hover color */
+  --action-button-click: #86db98; /* Action button hover color */
+
 }
 
 body {

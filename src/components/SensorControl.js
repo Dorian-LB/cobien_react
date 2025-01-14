@@ -4,7 +4,7 @@ import mqtt from 'mqtt';
 function SensorControl() {
   // Initial sensor configuration
   const initialSensors = [
-    { id: 1, PIC: 1, type: 'Touch', threshold: 100, scaling: 1, deviation: 100 },
+    { id: 1, PIC: 1, type: 'Touch', threshold: 100, scaling: 1, deviation: 0 },
     { id: 2, PIC: 1, type: 'Proximity', threshold: 100, scaling: 1, deviation: 0 },
     { id: 3, PIC: 2, type: 'Touch', threshold: 100, scaling: 1, deviation: 0 },
     { id: 4, PIC: 2, type: 'Proximity', threshold: 100, scaling: 1, deviation: 0 },
@@ -15,7 +15,7 @@ function SensorControl() {
 
   // Connect to MQTT broker
   useEffect(() => {
-    const client = mqtt.connect('ws://192.168.1.15:9001');
+    const client = mqtt.connect('ws://192.168.172.196:9001');
     client.on('connect', () => {
       console.log('Connected to MQTT broker');
       client.subscribe('sensor/current-configuration');

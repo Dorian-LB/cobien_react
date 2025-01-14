@@ -37,6 +37,7 @@ function RFIDControl({ client }) {
     }
     setConfiguring(false);
     setAction('');
+    setCardID('');
   };
 
   const handleConfigurationClick = () => {
@@ -55,7 +56,7 @@ function RFIDControl({ client }) {
           <div>
             <label className='action-prompt'>A quelle action voulez-vous attribuer cette carte?</label>
             <div className="action-button-prompt">
-            <button className="action-button" onClick={() => setAction('Visio')}>Visio</button>
+            <button className="action-button" onClick={() => {setAction('Visio')}}>Visio</button>
             <button className="action-button" onClick={() => setAction('Agenda')}>Agenda</button>
             <button className="action-button" onClick={() => setAction('Question')}>Question</button>
             </div>
