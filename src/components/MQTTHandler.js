@@ -17,18 +17,8 @@ const MQTTHandler = ({ children }) => {
 
   // Initial sensor configuration
   const initialSensors = {
-    PIC1: {
-      touchDeviation: 0,
-      proximityDeviation: 0,
-      touchState: 0,
-      proximityState: 0,
-    },
-    PIC2: {
-      touchDeviation: 0,
-      proximityDeviation: 0,
-      touchState: 0,
-      proximityState: 0,
-    },
+    PIC1: { touchDeviation: 0, proximityDeviation: 0, touchState: 0, proximityState: 0, },
+    PIC2: { touchDeviation: 0, proximityDeviation: 0, touchState: 0, proximityState: 0, },
   };
 
   const [sensors, setSensors] = useState(initialSensors);
@@ -82,6 +72,8 @@ const MQTTHandler = ({ children }) => {
       mqttClient.subscribe('rfid/action', (err) => {
         if (err) {
           console.error("Erreur lors de l'abonnement au topic rfid/action:", err);
+        }else{
+          console.log('Abonné au topic rfid/action');
         }
       });
 

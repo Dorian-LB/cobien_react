@@ -42,6 +42,7 @@ function VisioPage({ sensorData }) {
 
   const handleCancel = () => {
     navigate('/');
+    window.location.reload();
   };
 
   const createJitsiMeeting = () => {
