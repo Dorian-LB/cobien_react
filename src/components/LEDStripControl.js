@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 
 function LEDStripControl({ client }) {
   const [ledStrips, setLedStrips] = useState({
-    confirmation: {group: 2, intensity: 255, color: '#00ff00', mode: 'ON' },
-    delete: {group: 3, intensity: 255, color: '#ff0000', mode: 'ON' },
-    notification: {group: 4, intensity: 255, color: '#0000ff', mode: 'BLINK' },
-    main: { group: 1, intensity: 255, color: '#ffffff', mode: 'ON' },
+    confirmation: {group: 1, intensity: 255, color: '#00ff00', mode: 'ON' },
+    delete: {group: 2, intensity: 255, color: '#ff0000', mode: 'ON' },
+    notification: {group: 3, intensity: 255, color: '#0000ff', mode: 'BLINK' },
+    main: { group: 4, intensity: 255, color: '#ffffff', mode: 'ON' },
 
   });
 
