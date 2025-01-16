@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 // import './App.css'; // External CSS for styling
+import mqtt from 'mqtt';
 
 const ScreenSaver = () => {
   const [time, setTime] = useState(new Date());
@@ -62,8 +63,13 @@ const ScreenSaver = () => {
     );
   };
 
+  const mqttClient = mqtt.connect('ws://192.168.160.216:9001');
+  // const mqttClient = mqtt.connect('ws://localhost:9001'); 
+
   // Navigate to the NextPage when the screen is clicked
   const handleScreenClick = () => {
+    // voice/"siwis" pour l'accent français; "ona" pour l'accent catalan; "riccardo" pour l'accet italien
+    mqttClient.publish('voice/siwis', "Pour planifier une visio, cliquer sur le bouton Démarrer une Visio ou poser la carte"); 
     navigate('/home');
   };
 

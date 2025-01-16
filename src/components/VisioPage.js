@@ -10,7 +10,8 @@ function VisioPage({ sensorData }) {
   const navigate = useNavigate();
 
   const visioActions = useContext(VisioActionsContext);
-  const mqttClient = mqtt.connect('ws://192.168.172.196:9001');
+  const mqttClient = mqtt.connect('ws://192.168.160.216:9001');
+  // const mqttClient = mqtt.connect('ws://localhost:9001');
 
   const publishLedstripUpdate = (message) => {
     mqttClient.publish('ledstrip/update', JSON.stringify(message), (err) => {
@@ -22,12 +23,25 @@ function VisioPage({ sensorData }) {
     });
   };
 
+  const publishVoiceMessage = (message, topic) => {
+    // voice/"siwis" pour l'accent français; "ona" pour l'accent catalan; "riccardo" pour l'accet italien
+    mqttClient.publish(topic, message, (err) => {
+      if (err) {
+        console.error('Erreur lors de la publication sur voice/siwis:', err);
+      } else {
+        console.log('Message publié sur voice/siwis:', message);
+      }
+    });
+  };
+
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % contacts.length);
+    publishVoiceMessage('Vuoi chiamare' + contacts[currentIndex + 1].name + ' ?', 'voice/riccardo');
     console.log('Passage au contact suivant');
   };
 
   const handleValidate = () => {
+    publishVoiceMessage(`Confirmes la trucada amb  ${contacts[currentIndex].name} ?`, 'voice/ona');
     setIsValidated(true);
     console.log('Validation de la visio');
     publishLedstripUpdate({ group: 2, intensity: 255, color: "#FF0000", mode: "ON" });
@@ -35,12 +49,14 @@ function VisioPage({ sensorData }) {
 
   const handleConfirm = () => {
     const selectedContact = contacts[currentIndex];
+    publishVoiceMessage(`Devo chiamare ${selectedContact.name}.`, 'voice/riccardo');
     const meetUrl = createJitsiMeeting();
     window.open(meetUrl, '_blank');
     sendEmailInvitation(selectedContact.email, meetUrl);
   };
 
   const handleCancel = () => {
+    publishVoiceMessage('trucada cancel.lada.', 'voice/ona');
     navigate('/');
     window.location.reload();
   };

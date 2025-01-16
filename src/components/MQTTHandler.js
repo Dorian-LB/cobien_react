@@ -22,11 +22,11 @@ const MQTTHandler = ({ children }) => {
   };
 
   const [sensors, setSensors] = useState(initialSensors);
-  const [formerSensors, setformerSensors] = useState(initialSensors);
+  // const [formerSensors, setformerSensors] = useState(initialSensors);
   const visioActions = useContext(VisioActionsContext);
 
   const updateSensorData = (data) => {
-    setformerSensors(sensors);
+    // setformerSensors(sensors);
     setSensors((prevSensors) => {
       if (typeof prevSensors !== 'object' || prevSensors === null) {
         console.error('prevSensors n\'est pas un objet valide:', prevSensors);
@@ -55,7 +55,8 @@ const MQTTHandler = ({ children }) => {
   };
 
   useEffect(() => {
-    const mqttClient = mqtt.connect('ws://192.168.172.196:9001');
+    const mqttClient = mqtt.connect('ws://192.168.160.216:9001');
+    // const mqttClient = mqtt.connect('ws://localhost:9001');
 
     const publishLedstripUpdate = (message) => {
       mqttClient.publish('ledstrip/update', JSON.stringify(message), (err) => {
@@ -63,6 +64,17 @@ const MQTTHandler = ({ children }) => {
           console.error('Erreur lors de la publication sur ledstrip/update:', err);
         } else {
           console.log('Message publié sur ledstrip/update:', message);
+        }
+      });
+    };
+
+    const publishVoiceMessage = (message) => {
+      // voice/"siwis" pour l'accent français; "ona" pour l'accent catalan; "riccardo" pour l'accet italien
+      mqttClient.publish('voice/siwis', message, (err) => {
+        if (err) {
+          console.error('Erreur lors de la publication sur voice/siwis:', err);
+        } else {
+          console.log('Message publié sur voice/siwis:', message);
         }
       });
     };
@@ -100,7 +112,7 @@ const MQTTHandler = ({ children }) => {
           // setSensors(jsonData); 
 
           if (location.pathname === '/visio' && visioActions) {
-            if (jsonData.PIC1.touchState === 0 && sensors.PIC1.touchState === 1) {   
+            if (jsonData.PIC1.touchState === 1 && sensors.PIC1.touchState === 0) {   
               if (!isValidated()) {
                 visioActions.handleValidate();
                 console.log('Validation de la visio');
@@ -110,7 +122,7 @@ const MQTTHandler = ({ children }) => {
                 console.log('Confirmation de l\'appel');
               }
             }  
-            if (jsonData.PIC2.touchState === 0 && sensors.PIC2.touchState === 1) {
+            if (jsonData.PIC2.touchState === 1 && sensors.PIC2.touchState === 0) {
               if (!isValidated()) {
                 visioActions.handleNext();
                 console.log('Passage au contact suivant');
@@ -136,7 +148,7 @@ const MQTTHandler = ({ children }) => {
   }, [navigate, location, visioActions]);
 
   const isValidated = () => {
-    return visioActions?.isValidatedState && visioActions.isValidatedState();
+    return visioActions.isValidatedState();
   };
 
   return (
