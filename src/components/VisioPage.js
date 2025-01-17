@@ -35,8 +35,15 @@ function VisioPage({ sensorData }) {
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % contacts.length);
-    publishVoiceMessage('Vuoi chiamare' + contacts[currentIndex + 1].name + ' ?', 'voice/riccardo');
+    if(contacts.length === 0) {
+      console.log('Pas de contacts à afficher.');
+      return;
+    }
+    
+    const nextIndex = (currentIndex + 1) % contacts.length;
+    setCurrentIndex(nextIndex);
+
+    publishVoiceMessage('Vuoi chiamare' + ' ' + contacts[nextIndex].name + '' + ' ?', 'voice/riccardo');
     console.log('Passage au contact suivant');
   };
 

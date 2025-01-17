@@ -68,16 +68,7 @@ const MQTTHandler = ({ children }) => {
       });
     };
 
-    const publishVoiceMessage = (message) => {
-      // voice/"siwis" pour l'accent français; "ona" pour l'accent catalan; "riccardo" pour l'accet italien
-      mqttClient.publish('voice/siwis', message, (err) => {
-        if (err) {
-          console.error('Erreur lors de la publication sur voice/siwis:', err);
-        } else {
-          console.log('Message publié sur voice/siwis:', message);
-        }
-      });
-    };
+
 
     mqttClient.on('connect', () => {
       console.log('Connecté au serveur MQTT');
